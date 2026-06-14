@@ -9,7 +9,17 @@ import { resolve } from 'node:path';
 //  - trim trailing whitespace, end with exactly one newline
 export function canonicalize(content) {
   const lines = content.split(/\r\n|\r|\n/);
-  const kept = lines.filter((line) => !/^\s*vision_hash\s*:/.test(line));
+  // Locate the leading YAML frontmatter block: line 0 is '---', closed by the next '---'.
+  let fmEnd = -1;
+  if (lines[0] !== undefined && lines[0].trim() === '---') {
+    for (let i = 1; i < lines.length; i++) {
+      if (lines[i].trim() === '---') { fmEnd = i; break; }
+    }
+  }
+  const kept = lines.filter((line, idx) => {
+    const inFrontmatter = fmEnd !== -1 && idx > 0 && idx < fmEnd;
+    return !(inFrontmatter && /^\s*vision_hash\s*:/.test(line));
+  });
   return kept.join('\n').replace(/\s+$/, '') + '\n';
 }
 
@@ -18,7 +28,7 @@ export function computeHash(content) {
 }
 
 export function extractStoredHash(content) {
-  const m = content.match(/vision_hash\s*:\s*([0-9a-f]{64})/);
+  const m = content.match(/vision_hash\s*:\s*([0-9a-f]{64})(?![0-9a-f])/);
   return m ? m[1] : null;
 }
 
@@ -38,7 +48,13 @@ if (invokedDirectly) {
     console.error('usage: node scripts/vision-hash.mjs <compute|verify> <file>');
     process.exit(2);
   }
-  const content = readFileSync(file, 'utf8');
+  let content;
+  try {
+    content = readFileSync(file, 'utf8');
+  } catch (e) {
+    console.error(`error: cannot read file '${file}': ${e.message}`);
+    process.exit(2);
+  }
   if (cmd === 'compute') {
     process.stdout.write(computeHash(content) + '\n');
     process.exit(0);

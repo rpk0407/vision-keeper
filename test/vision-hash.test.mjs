@@ -55,3 +55,18 @@ test('extractStoredHash returns the 64-hex hash or null', () => {
 test('canonicalize is idempotent', () => {
   assert.equal(canonicalize(canonicalize(SAMPLE)), canonicalize(SAMPLE));
 });
+
+test('extractStoredHash rejects an over-length (65-char) hex string', () => {
+  assert.equal(extractStoredHash('vision_hash: ' + 'a'.repeat(65)), null);
+});
+
+test('hash is identical for CR-only line endings', () => {
+  const lf = SAMPLE;
+  const cr = SAMPLE.replace(/\n/g, '\r');
+  assert.equal(computeHash(lf), computeHash(cr));
+});
+
+test('a body line starting with vision_hash: DOES affect the hash (only frontmatter is stripped)', () => {
+  const withBody = SAMPLE + '\nvision_hash: should-count-in-body\n';
+  assert.notEqual(computeHash(SAMPLE), computeHash(withBody));
+});
