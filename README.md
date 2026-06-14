@@ -45,6 +45,26 @@ Reload after edits with `/reload-plugins`.
 Unix agree). `vision-judge` verifies it before judging — if the vision was edited after
 sealing, the report says so. The hash is computed by code, never by the model.
 
+## It reads your setup first
+
+Before sealing or judging, `vision-setup` (run automatically by `vision-init`) detects your
+stack and **agent topology** so everything adapts:
+
+- **Stack** — project type + how to run it → tells `vision-judge` whether and how to boot the
+  preview (or fall back to code-only).
+- **Topology** — a **solo session** vs an **agent team**. Solo: the `PostToolUse` hook captures
+  every edit. Team: the `SubagentStop` hook also ticks the ledger after each subagent — and
+  either way the watcher judges the full `git diff`, so **every agent's work is covered
+  regardless of who wrote it.**
+
+Findings are written under a `setup` key in `.vision-keeper.json`.
+
+### How the watcher connects to your build
+The hooks fire in the **same session as the orchestrator** that received your first prompt —
+so the ledger and `git diff` track its (and its subagents') real work. The watcher *agent*,
+though, is spawned **blind**: it shares none of that session's context. Connected to the
+*work*, quarantined from the *story* — that separation is the whole point.
+
 ## Live watch (catch drift mid-build)
 
 `vision-judge` runs at the end. `vision-watch` runs *during* the build, so you catch drift

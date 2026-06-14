@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const SKILLS = [
+  'skills/vision-setup/SKILL.md',
   'skills/vision-init/SKILL.md',
   'skills/vision-judge/SKILL.md',
   'skills/vision-watch/SKILL.md',
@@ -53,4 +54,5 @@ test('hooks file is valid JSON and wires the ledger on Write/Edit and Stop', () 
   assert.equal(post.matcher, 'Write|Edit');
   assert.match(post.hooks[0].command, /vision-ledger\.mjs" record/);
   assert.match(hooks.hooks.Stop[0].hooks[0].command, /vision-ledger\.mjs" status/);
+  assert.match(hooks.hooks.SubagentStop[0].hooks[0].command, /vision-ledger\.mjs" mark subagent/);
 });

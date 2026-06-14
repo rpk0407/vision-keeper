@@ -35,9 +35,11 @@ after sealing; continue, but the chief must flag it loudly in the report.
 
 ## Step 2 — Determine inspection mode
 
-Decide if the project is runnable (web app with a dev server, etc.). If runnable, start the
-Preview MCP and get a live URL for the Experience and Promise keepers. If not runnable
-(library/CLI) or it fails to boot, proceed code-only and record that.
+Check `.vision-keeper.json` for the `setup` block written by `vision-setup` (`setup.runnable`
+and `setup.commands.dev`). If runnable, start the Preview MCP with that dev command and get a
+live URL for the Experience and Promise keepers. If not runnable (library/CLI) or it fails to
+boot, proceed code-only and record that. (If no `setup` block exists, run the detector first:
+`node "${CLAUDE_PLUGIN_ROOT}/scripts/vision-detect.mjs"`.)
 
 ## Step 3 — Dispatch the blind panel IN PARALLEL
 

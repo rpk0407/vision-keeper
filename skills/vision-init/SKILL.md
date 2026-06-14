@@ -7,6 +7,17 @@ You are sealing the project's original vision. Produce one file: `VISION.lock` i
 project root, tamper-evident via a content hash. Do this carefully — everything the
 judges later conclude is measured against this file.
 
+## Step 0 — Read the user's setup first
+
+Before capturing the vision, detect the stack and agent topology so everything downstream
+adapts (run the `vision-setup` skill, or directly):
+
+    node "${CLAUDE_PLUGIN_ROOT}/scripts/vision-detect.mjs"
+
+Merge the result under a `setup` key in `.vision-keeper.json` (see the vision-setup skill).
+This tells `vision-judge` whether/how to boot the preview and tells `vision-watch` whether the
+build is a solo session or an agent team. Mention what you found to the user in one line.
+
 ## Step 1 — Choose capture mode
 
 Look for an existing brief, PRD, README, spec, or `$ARGUMENTS` (a path or pasted brief).

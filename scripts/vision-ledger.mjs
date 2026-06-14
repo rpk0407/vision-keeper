@@ -73,6 +73,15 @@ if (invokedDirectly) {
     process.exit(0);
   }
 
-  console.error('usage: node scripts/vision-ledger.mjs <record|status|checkpoint>');
+  if (cmd === 'mark') {
+    // Record a non-file event (e.g. a subagent finishing) so team builds still tick the ledger.
+    try {
+      ensureDir();
+      appendFileSync(LEDGER, JSON.stringify({ ts: new Date().toISOString(), event: process.argv[3] || 'event' }) + '\n');
+    } catch { /* never throw from a hook */ }
+    process.exit(0);
+  }
+
+  console.error('usage: node scripts/vision-ledger.mjs <record|status|checkpoint|mark>');
   process.exit(2);
 }
