@@ -1,0 +1,19 @@
+{
+  "name": "vision-keeper-motion",
+  "private": true,
+  "description": "Motion Canvas source for the Vision-Keeper how-it-works video.",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@motion-canvas/2d": "^3.17.2",
+    "@motion-canvas/core": "^3.17.2",
+    "@motion-canvas/ffmpeg": "^1.1.0",
+    "@motion-canvas/ui": "^3.17.2",
+    "@motion-canvas/vite-plugin": "^3.17.2",
+    "typescript": "^5.4.5",
+    "vite": "^4.5.5"
+  }
+}
