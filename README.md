@@ -45,6 +45,31 @@ Reload after edits with `/reload-plugins`.
 Unix agree). `vision-judge` verifies it before judging — if the vision was edited after
 sealing, the report says so. The hash is computed by code, never by the model.
 
+## Live watch (catch drift mid-build)
+
+`vision-judge` runs at the end. `vision-watch` runs *during* the build, so you catch drift
+before it's baked in. Three layers:
+
+- **The Cage** — your coding session. A `PostToolUse` hook logs *what* changed (path + time,
+  never file content) to `.vision-keeper/ledger.jsonl`. Near-zero cost; it can never block an
+  edit (the hook always exits cleanly).
+- **The Watchers** — when you run `/vision-keeper:vision-watch`, a blind Watcher agent grills
+  the `git diff` against `VISION.lock`: is this drifting? which promise or non-goal is
+  threatened? It never sees how the code was built — its yardstick is always the frozen dream.
+- **You** — a `Stop` hook nudges you once enough has changed ("8 changes since the last
+  watch…"), and the Watcher's verdict is logged to `.vision-keeper/watch-log.md`.
+
+```
+/vision-keeper:vision-watch          # grill the work so far
+/vision-keeper:vision-watch haiku    # ...on a chosen model
+```
+
+Honest scope: this is *checkpoint* watching, not realtime omniscience — the cheap ledger runs
+continuously, the LLM grill runs when you (or the nudge) trigger it. That split is the point:
+cost stays near zero until you ask for judgment.
+
+Add `.vision-keeper/` to your project's `.gitignore` — it's local runtime state.
+
 ## Choosing the model
 
 By default the keepers run on your session model (`inherit`). You can override it.

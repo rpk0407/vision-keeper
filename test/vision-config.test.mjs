@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { resolveModels, isValidModel } from '../scripts/vision-config.mjs';
 
-const AGENTS = ['functional', 'experience', 'scope', 'promise', 'chief'];
+const AGENTS = ['functional', 'experience', 'scope', 'promise', 'chief', 'watcher'];
 
 test('defaults to inherit for every agent', () => {
   const r = resolveModels({});

@@ -5,7 +5,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 
-export const AGENTS = ['functional', 'experience', 'scope', 'promise', 'chief'];
+export const AGENTS = ['functional', 'experience', 'scope', 'promise', 'chief', 'watcher'];
 const ALIASES = ['inherit', 'sonnet', 'opus', 'haiku', 'fable'];
 
 export function isValidModel(m) {

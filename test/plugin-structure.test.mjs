@@ -2,13 +2,18 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-const SKILLS = ['skills/vision-init/SKILL.md', 'skills/vision-judge/SKILL.md'];
+const SKILLS = [
+  'skills/vision-init/SKILL.md',
+  'skills/vision-judge/SKILL.md',
+  'skills/vision-watch/SKILL.md',
+];
 const AGENTS = [
   'agents/keeper-functional.md',
   'agents/keeper-experience.md',
   'agents/keeper-scope.md',
   'agents/keeper-promise.md',
   'agents/chief-keeper.md',
+  'agents/watcher.md',
 ];
 
 function frontmatter(path) {
@@ -40,4 +45,12 @@ test('every agent has name + description', () => {
 test('plugin manifest is valid JSON with a name', () => {
   const manifest = JSON.parse(readFileSync('.claude-plugin/plugin.json', 'utf8'));
   assert.equal(manifest.name, 'vision-keeper');
+});
+
+test('hooks file is valid JSON and wires the ledger on Write/Edit and Stop', () => {
+  const hooks = JSON.parse(readFileSync('hooks/hooks.json', 'utf8'));
+  const post = hooks.hooks.PostToolUse[0];
+  assert.equal(post.matcher, 'Write|Edit');
+  assert.match(post.hooks[0].command, /vision-ledger\.mjs" record/);
+  assert.match(hooks.hooks.Stop[0].hooks[0].command, /vision-ledger\.mjs" status/);
 });

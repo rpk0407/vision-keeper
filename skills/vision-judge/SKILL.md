@@ -13,7 +13,8 @@ Compute the per-agent model map deterministically (do not guess the precedence):
     node "${CLAUDE_PLUGIN_ROOT}/scripts/vision-config.mjs" "$ARGUMENTS" ".vision-keeper.json"
 
 This prints a JSON map like `{ "functional": "...", "experience": "...", "scope": "...",
-"promise": "...", "chief": "..." }`. Precedence: the command argument (e.g. `opus`) wins,
+"promise": "...", "chief": "...", "watcher": "..." }` (use the four keeper keys and `chief`;
+ignore `watcher` here). Precedence: the command argument (e.g. `opus`) wins,
 then per-agent entries in `.vision-keeper.json`, then its blanket `model`, else `inherit`
 (the session model). If it exits non-zero (invalid model), show the error and STOP.
 
