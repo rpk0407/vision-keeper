@@ -1,0 +1,11 @@
+<!doctype html>
+<html>
+  <body style="font-family: system-ui; text-align: center; padding: 4rem;">
+    <h1 id="greeting"></h1>
+    <p>Wishing you a good day.</p>
+    <script>
+      const name = new URLSearchParams(location.search).get('name') || 'friend';
+      document.getElementById('greeting').textContent = 'Hello, ' + name + '!';
+    </script>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+---
+project: Greeting Card
+sealed_at: 2026-06-14
+vision_hash: 2766fa74d1fcd9cfe331a35669a468aded2974e41ff5385c0ed1eeddddc0ec4b
+---
+# Dream
+
+A single calm web page that warmly greets a visitor by name and wishes them a good day.
+It feels personal and gentle, not corporate.
+
+## Success criteria
+
+- Opening the page shows a personal greeting.
+
+## Promises
+
+- Greets the visitor by name.
+- Wishes them a good day.
+- Is a single self-contained page.
+
+## Non-goals
+
+- No login or accounts.
+- No analytics or tracking.
