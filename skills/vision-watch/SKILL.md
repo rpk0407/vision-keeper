@@ -26,17 +26,21 @@ means do not override (use the session model). If it exits non-zero, show the er
 
 ## Step 3 — Gather the work so far
 
-Get the uncommitted diff:
+Capture BOTH modified and newly-added work, without disturbing the user's git index:
 
-    git diff
+    git diff HEAD                              # changes to tracked files since the last commit
+    git ls-files --others --exclude-standard   # new files not yet committed
 
-If that is empty, also try `git diff HEAD`. This diff is the only work the Watcher sees. Do
-NOT include any conversation history, your own reasoning, or commit messages.
+If `git diff HEAD` errors (no commits yet), fall back to `git diff`. The `git diff HEAD`
+output plus the list of new files IS the work the Watcher judges. Do NOT include any
+conversation history, your own reasoning, or commit messages — only the diff and the new-file
+paths.
 
 ## Step 4 — Dispatch the Watcher (blind)
 
 Dispatch the `watcher` agent (with the resolved model) passing ONLY: the full contents of
-`VISION.lock` and the diff from Step 3. Nothing about how it was built or who built it.
+`VISION.lock`, the diff from Step 3, and the list of new-file paths (the Watcher will Read
+those itself). Nothing about how it was built or who built it.
 
 ## Step 5 — Report to the human and mark the checkpoint
 
