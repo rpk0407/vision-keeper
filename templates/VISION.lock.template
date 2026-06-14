@@ -1,0 +1,24 @@
+---
+project: <PROJECT NAME>
+sealed_at: <YYYY-MM-DD>
+vision_hash: 0000000000000000000000000000000000000000000000000000000000000000
+---
+# Dream
+
+<One to three paragraphs describing the ideal finished product as the user
+imagines it. Write it as the end-state, in the present tense: "The app is...",
+"A user can...". This is what the keepers will measure reality against.>
+
+## Success criteria
+
+- <A testable statement of what "done and good" means.>
+- <Another.>
+
+## Promises
+
+- <A single, concrete, individually-checkable claim about the product.>
+- <Each promise is one line. The Promise-audit keeper checks these 1:1.>
+
+## Non-goals
+
+- <Something this project explicitly is NOT, to guard scope.>
