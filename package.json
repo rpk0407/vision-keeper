@@ -1,0 +1,10 @@
+{
+  "name": "vision-keeper",
+  "version": "0.1.0",
+  "description": "Freeze a project's original vision at birth; judge the delivered product against it with a blind panel of agents.",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test"
+  }
+}
