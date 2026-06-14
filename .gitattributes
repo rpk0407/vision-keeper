@@ -1,0 +1,4 @@
+# Normalize line endings — the vision hash is LF-canonical, keep the tree LF.
+* text=auto eol=lf
+*.png binary
+*.jpg binary

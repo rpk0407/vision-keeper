@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Vision-Keeper — how it works</title>
+<style>
+  :root{
+    --bg:#faf9f5; --surface:#fff; --line:#e7e4da; --ink:#1f1e1b; --muted:#6b6a64; --tert:#9b9a92;
+    --info:#185fa5; --info-bg:#e6f1fb; --good:#3b6d11; --good-bg:#eaf3de;
+    --warn:#854f0b; --warn-bg:#faeeda; --bad:#a32d2d; --bad-bg:#fcebeb;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#1a1916; --surface:#23221e; --line:#34332e; --ink:#f3f1ea; --muted:#a3a29a; --tert:#6f6e68;
+      --info:#85b7eb; --info-bg:#0c447c; --good:#97c459; --good-bg:#27500a;
+      --warn:#ef9f27; --warn-bg:#633806; --bad:#f09595; --bad-bg:#791f1f; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:14px;line-height:1.5}
+  .wrap{max-width:760px;margin:0 auto;padding:28px 20px}
+  h1{font-size:20px;font-weight:600;margin:0 0 2px}
+  .sub{color:var(--muted);font-size:13px;margin:0 0 16px}
+  .top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+  .chip{display:flex;align-items:center;gap:6px;font-size:12px;padding:5px 10px;border-radius:8px;background:var(--surface);border:1px solid var(--line);color:var(--muted);font-family:var(--mono)}
+  .clock{margin-left:auto;font-size:12px;color:var(--tert);font-family:var(--mono)}
+  .led{font-size:12px;color:var(--tert)}
+  .card{border:1px solid var(--line);border-radius:12px;margin-bottom:9px;overflow:hidden;opacity:.5;transition:opacity .4s cubic-bezier(.2,.7,.2,1),border-color .4s;background:var(--surface)}
+  .card.live{opacity:1;border-color:var(--info)}
+  .hd{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg);font-size:12px}
+  .who{color:var(--tert)}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--line);margin-left:auto}
+  .card.live .dot{background:var(--info);animation:rp 1.1s infinite}
+  @keyframes rp{0%,100%{opacity:1}50%{opacity:.25}}
+  .think{font-size:11px;font-style:italic;color:var(--tert);padding:5px 12px;min-height:15px}
+  .tabs{display:flex;gap:2px;padding:6px 8px 0}
+  .tab{font-size:11px;font-family:var(--mono);padding:4px 10px;border-radius:6px 6px 0 0;color:var(--tert)}
+  .tab.act{background:var(--bg);color:var(--muted);border:1px solid var(--line);border-bottom:none}
+  .ed{display:flex;font-family:var(--mono);font-size:12.5px;line-height:1.7;min-height:108px;max-height:108px;overflow:hidden}
+  .gut{padding:6px 0;text-align:right;color:var(--tert);background:var(--bg);min-width:28px}
+  .gut div{padding:0 7px}
+  .code{padding:6px 10px;flex:1;white-space:pre;overflow:hidden}
+  .ln{min-height:1.7em}
+  .ln.bad{background:var(--bad-bg);color:var(--bad);border-radius:4px}
+  .ln.strike{text-decoration:line-through;opacity:.45}
+  .cur{display:inline-block;width:7px;height:1em;background:var(--info);vertical-align:-2px;animation:rb .85s steps(1) infinite}
+  @keyframes rb{0%,50%{opacity:1}51%,100%{opacity:0}}
+  .w2{display:grid;grid-template-columns:140px 1fr}
+  .ref{padding:9px;border-right:1px solid var(--line)}
+  .ref .t{font-size:10px;color:var(--tert);margin:0 0 4px}
+  .pchip{display:block;font-size:11px;padding:2px 7px;border-radius:6px;margin-bottom:3px;background:var(--bg);color:var(--muted)}
+  .pchip.ng{background:var(--bad-bg);color:var(--bad);opacity:.8}
+  .dw{position:relative;overflow:hidden;min-height:88px}
+  .diff{padding:6px 10px;font-family:var(--mono);font-size:12px;line-height:1.7;white-space:pre}
+  .dl{color:var(--good);transition:all .3s}
+  .dl.viol{color:var(--bad);background:var(--bad-bg);border-radius:4px}
+  .dl.gone{color:var(--tert);text-decoration:line-through;background:transparent}
+  .scan{position:absolute;left:0;width:100%;height:2px;background:var(--info);top:0;opacity:0}
+  .sev{display:flex;align-items:center;gap:8px;padding:7px 12px;border-top:1px solid var(--line);font-size:12px}
+  .meter{flex:1;height:6px;border-radius:3px;background:var(--bg);overflow:hidden}
+  .fill{height:100%;width:0%;background:var(--good);transition:width .6s cubic-bezier(.2,.7,.2,1),background .4s}
+  .feed{padding:9px 12px;min-height:120px;max-height:120px;overflow-y:auto;display:flex;flex-direction:column;gap:6px}
+  .bub{font-size:12.5px;padding:6px 10px;border-radius:10px;max-width:90%;line-height:1.5;animation:rin .35s ease}
+  @keyframes rin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .bub .meta{font-size:9.5px;opacity:.65;display:block;margin-bottom:1px;font-family:var(--mono)}
+  .bub.sys{background:var(--warn-bg);color:var(--warn);align-self:center;font-size:11.5px}
+  .bub.watcher{background:var(--bg);align-self:flex-start;border:1px solid var(--line)}
+  .bub.bad{background:var(--bad-bg);color:var(--bad);align-self:flex-start}
+  .bub.good{background:var(--good-bg);color:var(--good);align-self:flex-start}
+  .bub.me{background:var(--info-bg);color:var(--info);align-self:flex-end}
+  .jrow{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:10px 12px}
+  .kp{text-align:center;padding:8px 4px;border-radius:8px;background:var(--bg);border:1px solid var(--line);opacity:.4;transition:all .35s;font-size:11px;color:var(--tert)}
+  .kp.on{opacity:1;border-color:var(--good);background:var(--good-bg);color:var(--good)}
+  .score{text-align:center;padding:0 12px 12px}
+  .score .n{font-size:34px;font-weight:600;color:var(--good)}
+  .score .c{font-size:12px;color:var(--muted)}
+  .bar{display:flex;align-items:center;gap:8px;margin-top:8px}
+  button{font:inherit;font-size:13px;padding:7px 14px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+  button:hover{border-color:var(--info)}
+  .st{font-size:12px;color:var(--muted);margin-left:auto}
+  .note{font-size:11px;color:var(--tert);margin-top:14px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Vision-Keeper — how it works</h1>
+  <p class="sub">An animated walk-through of the four layers: the cage builds, the watcher catches drift, you steer, the panel judges.</p>
+
+  <div class="top">
+    <span class="chip">VISION.lock <span id="hash">—</span></span>
+    <span class="led">ledger: <b id="led">0</b></span>
+    <span class="clock" id="clk">09:14:02</span>
+  </div>
+
+  <div class="card" id="L1">
+    <div class="hd">layer 1 · the cage <span class="who" id="agent">— idle</span><span class="dot"></span></div>
+    <div class="tabs"><span class="tab act" id="tabA">index.html</span><span class="tab" id="tabB">auth.js</span></div>
+    <div class="ed"><div class="gut" id="gut"></div><div class="code" id="code"></div></div>
+    <div class="think" id="t1"></div>
+  </div>
+
+  <div class="card" id="L2">
+    <div class="hd">layer 2 · the watcher <span class="who">— blind, vs VISION.lock</span><span class="dot"></span></div>
+    <div class="w2">
+      <div class="ref">
+        <p class="t">non-goals</p><span class="pchip ng">no login</span><span class="pchip ng">no tracking</span>
+        <p class="t" style="margin-top:7px">promise</p><span class="pchip">greet by name</span>
+      </div>
+      <div class="dw"><div class="diff" id="diff"></div><div class="scan" id="scan"></div></div>
+    </div>
+    <div class="think" id="t2"></div>
+    <div class="sev"><span>severity</span><div class="meter"><div class="fill" id="fill"></div></div><span id="sevl">ok</span></div>
+  </div>
+
+  <div class="card" id="L3">
+    <div class="hd">layer 3 · you <span class="who">— human in the loop</span><span class="dot"></span></div>
+    <div class="feed" id="feed"></div>
+  </div>
+
+  <div class="card" id="L4">
+    <div class="hd">final judgment <span class="who">— 4 blind keepers + chief</span><span class="dot"></span></div>
+    <div class="jrow">
+      <div class="kp" id="kf">functional</div><div class="kp" id="ke">experience</div>
+      <div class="kp" id="ks">scope</div><div class="kp" id="kp">promise</div><div class="kp" id="kc">chief</div>
+    </div>
+    <div class="score"><div class="n" id="score">—</div><div class="c" id="scorec"></div></div>
+  </div>
+
+  <div class="bar"><button id="go">play</button><span class="st" id="st">ready</span></div>
+  <p class="note">Illustrative animation of the architecture — a scripted scenario, not live data.</p>
+</div>
+
+<script>
+(function(){
+  var run=0,busy=false,t=0;
+  var $=function(i){return document.getElementById(i);};
+  function sleep(ms,my){return new Promise(function(res,rej){setTimeout(function(){my===run?res():rej(0);},ms);});}
+  function rnd(a,b){return a+Math.random()*(b-a);}
+  function live(n){["L1","L2","L3","L4"].forEach(function(x){$(x).classList.remove("live");});if(n)$("L"+n).classList.add("live");}
+  function st(s){$("st").textContent=s;}
+  function tick(sec){t+=(sec||0);var m=14+Math.floor((2+t)/60)%60,s=(2+t)%60;return "09:"+String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");}
+  function clk(){$("clk").textContent=tick(0);}
+  var ledger=0;function bump(){ledger++;$("led").textContent=ledger;}
+  function addLine(){var l=document.createElement("div");l.className="ln";var x=document.createElement("span");l.appendChild(x);var c=document.createElement("span");c.className="cur";l.appendChild(c);$("code").appendChild(l);relabel();return{l:l,x:x,c:c};}
+  function relabel(){var g=$("gut");g.innerHTML="";var n=$("code").querySelectorAll(".ln").length;for(var k=1;k<=n;k++){var d=document.createElement("div");d.textContent=k;g.appendChild(d);}}
+  function fin(o){if(o.c&&o.c.parentNode)o.c.parentNode.removeChild(o.c);bump();t+=Math.floor(rnd(2,6));clk();}
+  async function type(o,text,my){var base=o.x.textContent;for(var i=0;i<text.length;i++){o.x.textContent=base+text.slice(0,i+1);var ch=text[i];var d=rnd(22,70);if(ch===" ")d+=12;if("{}();<>'=".indexOf(ch)>=0)d+=50;await sleep(d,my);}}
+  async function back(o,toLen,my){while(o.x.textContent.length>toLen){o.x.textContent=o.x.textContent.slice(0,-1);await sleep(rnd(38,62),my);}}
+  function th(id,txt){$(id).textContent=txt;}
+  async function beat(id,txt,my,ms){th(id,txt);await sleep(ms||rnd(500,850),my);}
+  function setTab(w){$("tabA").classList.toggle("act",w==="A");$("tabB").classList.toggle("act",w==="B");}
+  function diffLine(text,viol){var d=document.createElement("div");d.className="dl"+(viol?" viol":"");d.textContent="+ "+text;$("diff").appendChild(d);return d;}
+  async function scan(my){var s=$("scan");s.style.transition="none";s.style.top="0%";s.style.opacity="1";await sleep(40,my);s.style.transition="top 1s cubic-bezier(.4,0,.2,1)";s.style.top="100%";await sleep(1050,my);s.style.opacity="0";}
+  function sev(p,l,bad){var f=$("fill");f.style.width=p+"%";f.style.background=bad?"var(--bad)":(p>40?"var(--warn)":"var(--good)");$("sevl").textContent=l;}
+  async function bub(who,text,cls,my){var f=$("feed");var b=document.createElement("div");b.className="bub "+cls;b.innerHTML='<span class="meta">'+who+' · '+tick(Math.floor(rnd(1,4)))+'</span>'+text;clk();f.appendChild(b);f.scrollTop=f.scrollHeight;await sleep(rnd(850,1200),my);}
+
+  async function play(){
+    var my=++run;busy=true;$("go").textContent="pause";
+    $("code").innerHTML="";$("gut").innerHTML="";$("diff").innerHTML="";$("feed").innerHTML="";ledger=0;$("led").textContent=0;t=0;sev(0,"ok");
+    ["kf","ke","ks","kp","kc"].forEach(function(i){$(i).classList.remove("on");});$("score").textContent="—";$("scorec").textContent="";
+    $("t1").textContent="";$("t2").textContent="";$("hash").textContent="—";setTab("A");
+    try{
+      live(0);st("sealing the vision…");$("hash").textContent="sealing…";
+      for(var k=0;k<10;k++){$("hash").textContent="#"+Math.random().toString(16).slice(2,10);await sleep(70,my);}
+      $("hash").textContent="#2766fa74 frozen";await sleep(500,my);
+
+      live(1);$("agent").textContent="— coder a";st("layer 1 — coder a writes index.html");
+      await beat("t1","coder a: opening index.html…",my);
+      var l1=addLine();await type(l1,"// greeting page",my);fin(l1);
+      await beat("t1","coder a: read the name from the url…",my,420);
+      var l2=addLine();await type(l2,"const name = params.get('name') || 'friend';",my);fin(l2);
+      await beat("t1","coder a: greet them by name…",my,420);
+      var l3=addLine();await type(l3,"greet.textContent = 'Hello, ' + name + '!';",my);fin(l3);
+      await beat("t1","coder a: and a warm sign-off…",my,420);
+      var l4=addLine();await type(l4,"day.textContent = 'Wishng you',",my);
+      await sleep(260,my);await beat("t1","coder a: typo — fixing…",my,300);
+      await back(l4,"day.textContent = 'Wis".length,my);await type(l4,"hing you a good day.';",my);fin(l4);
+
+      await beat("t1","coder a: done. handing off…",my,500);
+      setTab("B");$("code").innerHTML="";$("gut").innerHTML="";$("agent").textContent="— coder b";st("layer 1 — coder b opens a new file");
+      await beat("t1","coder b: new file auth.js — adding a sign-in…",my);
+      var b1=addLine();await type(b1,"form.onsubmit = login;",my);fin(b1);var d1=diffLine("auth.js  form.onsubmit = login;",true);
+      await beat("t1","coder b: capture the password…",my,400);
+      var b2=addLine();await type(b2,"const pw = passwordField.value;",my);fin(b2);diffLine("auth.js  const pw = passwordField.value;",false);
+      await beat("t1","coder b: and a quick visit beacon…",my,400);
+      var b3=addLine();await type(b3,"fetch('/track?event=visit');",my);fin(b3);var d3=diffLine("auth.js  fetch('/track?event=visit');",true);
+
+      await bub("system","ledger: "+ledger+" changes since the last watch — running the watcher.","sys",my);
+
+      live(2);st("layer 2 — watcher wakes, reads the diff, blind");
+      await beat("t2","watcher: new diff in auth.js. reading…",my,700);await scan(my);
+      await beat("t2","watcher: 'login' … cross-referencing non-goals…",my,650);
+      d1.classList.add("viol");sev(55,"minor",false);
+      await beat("t2","watcher: that's a non-goal. raising severity.",my,600);
+      await beat("t2","watcher: '/track' … that's tracking. also forbidden.",my,700);
+      d3.classList.add("viol");sev(92,"high",true);$("hash").textContent="#2766fa74 matches";
+      await beat("t2","watcher: two crossings. this is drift. alerting you.",my,600);
+
+      live(3);st("layer 3 — the alert reaches you");
+      await bub("watcher","ALERT — auth.js adds a login form and a /track beacon. Both are non-goals in the sealed vision.","bad",my);
+      await bub("you","Steer: drop the login + the tracker. Keep us on the greeting.","me",my);
+
+      live(1);$("agent").textContent="— coder b";st("layer 1 — coder b corrects (partially)");
+      await beat("t1","coder b: removing the login flow…",my,500);
+      b1.classList.add("bad","strike");await sleep(500,my);if(b1.parentNode)b1.parentNode.removeChild(b1);relabel();
+      d1.classList.remove("viol");d1.classList.add("gone");d1.textContent="- "+d1.textContent.slice(2);sev(55,"minor",false);
+      live(2);st("layer 2 — re-scan");await beat("t2","watcher: re-reading… login's gone…",my,650);await scan(my);
+      await beat("t2","watcher: …but '/track' is still here. not clean yet.",my,750);
+      d3.classList.add("viol");sev(48,"minor",true);
+      live(3);await bub("watcher","Better — login removed. But the /track beacon is still live. Still one non-goal crossed.","watcher",my);
+      await bub("you","Good catch — kill the tracker too.","me",my);
+      live(1);await beat("t1","coder b: removing the beacon…",my,500);
+      b3.classList.add("bad","strike");await sleep(500,my);if(b3.parentNode)b3.parentNode.removeChild(b3);relabel();
+      d3.classList.remove("viol");d3.classList.add("gone");d3.textContent="- "+d3.textContent.slice(2);
+
+      live(2);st("layer 2 — final re-scan");await scan(my);sev(8,"on-track",false);
+      await beat("t2","watcher: clean. back on the dream.",my,600);
+      live(3);await bub("watcher","Resolved — no non-goals remain. Drift caught and corrected live.","good",my);
+
+      live(4);st("final judgment — the blind panel wakes");await sleep(400,my);
+      $("kf").classList.add("on");await sleep(rnd(500,800),my);$("ke").classList.add("on");await sleep(rnd(500,800),my);
+      $("ks").classList.add("on");await sleep(rnd(500,800),my);$("kp").classList.add("on");await sleep(rnd(500,800),my);
+      $("kc").classList.add("on");st("chief synthesizing…");await sleep(700,my);
+      var n=0,target=91,iv=setInterval(function(){if(run!==my){clearInterval(iv);return;}n+=3;if(n>=target){n=target;clearInterval(iv);}$("score").textContent=n+"%";},40);
+      await sleep(1500,my);$("scorec").textContent="promises kept · scope held · drift corrected mid-flight — the dream survived";
+      live(0);st("done — one frozen vision, watched then judged");
+    }catch(e){return;}
+    busy=false;$("go").textContent="replay";
+  }
+  $("go").onclick=function(){if(busy){run++;busy=false;live(0);st("paused");this.textContent="play";}else{play();}};
+})();
+</script>
+</body>
+</html>

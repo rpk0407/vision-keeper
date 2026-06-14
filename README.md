@@ -45,6 +45,14 @@ Reload after edits with `/reload-plugins`.
 Unix agree). `vision-judge` verifies it before judging — if the vision was edited after
 sealing, the report says so. The hash is computed by code, never by the model.
 
+## See how it works
+
+```
+/vision-keeper:vision-demo
+```
+Opens `examples/how-it-works.html` — a self-contained animation of all four layers (the cage
+builds, the watcher catches drift, you steer, the panel judges). Illustrative, not live data.
+
 ## It reads your setup first
 
 Before sealing or judging, `vision-setup` (run automatically by `vision-init`) detects your

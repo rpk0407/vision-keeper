@@ -7,6 +7,7 @@ const SKILLS = [
   'skills/vision-init/SKILL.md',
   'skills/vision-judge/SKILL.md',
   'skills/vision-watch/SKILL.md',
+  'skills/vision-demo/SKILL.md',
 ];
 const AGENTS = [
   'agents/keeper-functional.md',
