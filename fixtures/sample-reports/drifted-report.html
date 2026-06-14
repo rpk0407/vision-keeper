@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Vision-Keeper report — Greeting Card</title>
+<style>
+  :root {
+    --bg:#faf9f5; --surface:#ffffff; --line:#e7e4da; --ink:#1f1e1b; --muted:#6b6a64;
+    --good:#3b6d11; --good-bg:#eaf3de; --warn:#854f0b; --warn-bg:#faeeda; --bad:#a32d2d; --bad-bg:#fcebeb;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#1a1916; --surface:#23221e; --line:#34332e; --ink:#f3f1ea; --muted:#a3a29a;
+      --good:#97c459; --good-bg:#27500a; --warn:#ef9f27; --warn-bg:#633806; --bad:#f09595; --bad-bg:#791f1f; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; line-height:1.6; }
+  .wrap { max-width:720px; margin:0 auto; padding:40px 24px; }
+  .row { display:flex; align-items:center; }
+  .between { justify-content:space-between; gap:12px; }
+  .muted { color:var(--muted); }
+  .label { font-size:13px; font-weight:500; color:var(--muted); margin:28px 0 10px; }
+  .pill { font-size:11px; padding:3px 9px; border-radius:8px; white-space:nowrap; }
+  .good { color:var(--good); background:var(--good-bg); }
+  .warn { color:var(--warn); background:var(--warn-bg); }
+  .bad { color:var(--bad); background:var(--bad-bg); }
+  .hero { display:flex; align-items:center; gap:22px; background:var(--surface);
+    border:1px solid var(--line); border-radius:14px; padding:22px; margin:18px 0; }
+  .score { font-size:46px; font-weight:600; line-height:1; min-width:104px; text-align:center; }
+  .hero .why { border-left:1px solid var(--line); padding-left:22px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px; }
+  .audit { background:var(--surface); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+  .arow { display:flex; align-items:center; gap:12px; padding:13px 16px; border-bottom:1px solid var(--line); }
+  .arow:last-child { border-bottom:0; }
+  .arow .pill { min-width:56px; text-align:center; }
+  .grow { flex:1; }
+  ol { margin:0; padding-left:20px; }
+  ol li { margin:6px 0; }
+  .tiers { display:flex; flex-wrap:wrap; gap:8px 22px; margin-top:22px; padding-top:14px;
+    border-top:1px solid var(--line); font-size:12px; color:var(--muted); }
+  .foot { margin-top:26px; display:flex; justify-content:space-between; font-size:12px; color:var(--muted); }
+  h1 { font-size:19px; font-weight:600; margin:0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="row between">
+    <div>
+      <h1>Greeting Card</h1>
+      <p class="muted" style="font-size:13px; margin:3px 0 0;">Acceptance report · judged blind to how it was built</p>
+    </div>
+    <span class="pill good">hash matches</span>
+  </div>
+
+  <div class="hero">
+    <div class="score" style="color:var(--bad);">5%</div>
+    <div class="why">
+      <p style="font-weight:500; margin:0;">It became a different product.</p>
+      <p class="muted" style="margin:4px 0 0;">A warm personal greeting was promised. A login wall with a tracking beacon was delivered.</p>
+    </div>
+  </div>
+
+  <p class="label">By lens</p>
+  <div class="grid">
+    <div class="card">
+      <div class="row between" style="margin-bottom:6px;">
+        <span style="font-weight:500;">Functional</span><span class="pill bad">fails</span>
+      </div>
+      <p class="muted" style="font-size:13px; margin:0;">The page never greets anyone — it renders a sign-in form.</p>
+    </div>
+    <div class="card">
+      <div class="row between" style="margin-bottom:6px;">
+        <span style="font-weight:500;">Experience</span><span class="pill bad">fails</span>
+      </div>
+      <p class="muted" style="font-size:13px; margin:0;">“Sign in to continue” is cold and corporate — the opposite of gentle.</p>
+    </div>
+    <div class="card">
+      <div class="row between" style="margin-bottom:6px;">
+        <span style="font-weight:500;">Scope</span><span class="pill bad">drifted</span>
+      </div>
+      <p class="muted" style="font-size:13px; margin:0;">Purpose replaced wholesale; both non-goals violated.</p>
+    </div>
+    <div class="card">
+      <div class="row between" style="margin-bottom:6px;">
+        <span style="font-weight:500;">Promise</span><span class="pill bad">0 / 3 kept</span>
+      </div>
+      <p class="muted" style="font-size:13px; margin:0;">Two promises broken, one only partial.</p>
+    </div>
+  </div>
+
+  <p class="label">Promise audit</p>
+  <div class="audit">
+    <div class="arow">
+      <span class="pill bad">broken</span>
+      <span class="grow">Greets the visitor by name</span>
+      <span class="muted" style="font-size:12px;">no greeting in markup</span>
+    </div>
+    <div class="arow">
+      <span class="pill bad">broken</span>
+      <span class="grow">Wishes them a good day</span>
+      <span class="muted" style="font-size:12px;">text absent</span>
+    </div>
+    <div class="arow">
+      <span class="pill warn">partial</span>
+      <span class="grow">Single self-contained page</span>
+      <span class="muted" style="font-size:12px;">fires external tracker</span>
+    </div>
+  </div>
+
+  <p class="label">Why it isn’t what it was meant to be</p>
+  <ol>
+    <li>No greeting at all — traces to “greets the visitor by name”. <span class="bad" style="padding:1px 7px; border-radius:6px; font-size:11px;">blocker</span></li>
+    <li>Login form present — violates non-goal “no login or accounts”.</li>
+    <li>Tracking beacon present — violates non-goal “no analytics or tracking”.</li>
+    <li>No good-day wish — traces to “wishes them a good day”.</li>
+  </ol>
+
+  <div class="tiers">
+    <span>Verified live: none</span>
+    <span>Code-only: all four lenses</span>
+    <span>Could not assess: none</span>
+  </div>
+
+  <div class="foot">
+    <span>Vision-Keeper · 2026-06-14</span>
+    <span>vision 2766fa74</span>
+  </div>
+
+</div>
+</body>
+</html>
