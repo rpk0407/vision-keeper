@@ -7,6 +7,12 @@ vision and writes an honest acceptance report.
 The point is **quarantine**: a judge's value comes from *not* having lived through the
 implementation. No anchoring bias, no "it's my code so it's good."
 
+## Demo
+
+![Vision-Keeper — how it works](docs/demo.svg)
+
+▶ Live, animated walk-through: open [`examples/how-it-works.html`](examples/how-it-works.html) in a browser, or run `/vision-keeper:vision-demo`.
+
 ## Install (local, for development)
 
 ```bash
