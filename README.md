@@ -45,6 +45,28 @@ Reload after edits with `/reload-plugins`.
 Unix agree). `vision-judge` verifies it before judging — if the vision was edited after
 sealing, the report says so. The hash is computed by code, never by the model.
 
+## Choosing the model
+
+By default the keepers run on your session model (`inherit`). You can override it.
+
+**Per run** — pass a model to the judge:
+```
+/vision-keeper:vision-judge opus
+```
+
+**Persistently** — drop a `.vision-keeper.json` in your project root (see
+`vision-keeper.config.example.json`):
+```json
+{
+  "model": "sonnet",
+  "models": { "experience": "opus" }
+}
+```
+`model` sets all five agents; `models` overrides individual lenses (run the cheap lenses on a
+small model, the Experience lens on a big one). Precedence: command argument > per-agent >
+blanket `model` > `inherit`. Accepts `inherit`, `sonnet`, `opus`, `haiku`, `fable`, or a full
+model id. Resolution is deterministic and unit-tested (`scripts/vision-config.mjs`).
+
 ## Develop
 
 ```bash

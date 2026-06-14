@@ -1,10 +1,24 @@
 ---
 name: vision-judge
-description: Use when the user declares a project DONE, to judge the delivered product against its frozen VISION.lock. Verifies the vision hash, then wakes a blind 4-lens panel of keeper subagents (functional, experience, scope, promise) plus a chief synthesizer, and writes a shareable acceptance report. The keepers never see how the product was built.
+description: Use when the user declares a project DONE, to judge the delivered product against its frozen VISION.lock. Verifies the vision hash, then wakes a blind 4-lens panel of keeper subagents (functional, experience, scope, promise) plus a chief synthesizer, and writes a shareable acceptance report. The keepers never see how the product was built. Accepts an optional model argument (e.g. /vision-keeper:vision-judge opus) to choose which model the keepers run on.
 ---
 
 You are running the Vision-Keeper judgment. The keepers must stay BLIND: they judge the
 delivered product against the frozen vision, with no knowledge of how it was built.
+
+## Step 0 — Resolve which model the keepers run on
+
+Compute the per-agent model map deterministically (do not guess the precedence):
+
+    node "${CLAUDE_PLUGIN_ROOT}/scripts/vision-config.mjs" "$ARGUMENTS" ".vision-keeper.json"
+
+This prints a JSON map like `{ "functional": "...", "experience": "...", "scope": "...",
+"promise": "...", "chief": "..." }`. Precedence: the command argument (e.g. `opus`) wins,
+then per-agent entries in `.vision-keeper.json`, then its blanket `model`, else `inherit`
+(the session model). If it exits non-zero (invalid model), show the error and STOP.
+
+Use each agent's resolved value as the `model` when you dispatch it below. `inherit` means
+do not override — let it use the session model.
 
 ## Step 1 — Locate and verify the vision
 
@@ -34,14 +48,15 @@ CRITICAL — preserving the quarantine:
 - Do NOT paste any of this conversation's history, your own prior reasoning, commit messages,
   changelogs, or any hint that Claude built it. Subagents start blank; keep them blank.
 - Give each keeper only the vision text + the source pointer + (maybe) the preview URL.
-- Dispatch: keeper-functional, keeper-experience, keeper-scope, keeper-promise.
+- Dispatch: keeper-functional, keeper-experience, keeper-scope, keeper-promise — each with
+  the model resolved for it in Step 0 (skip the override when its value is `inherit`).
 
 Collect their four returned verdicts verbatim.
 
 ## Step 4 — Synthesize via the chief
 
-Dispatch chief-keeper with: the four verdicts, the hash-verification result, the inspection
-mode, and the vision contents. It writes `<project>/vision-report-<YYYY-MM-DD>.md` from the
+Dispatch chief-keeper (using its Step 0 resolved model) with: the four verdicts, the
+hash-verification result, the inspection mode, and the vision contents. It writes `<project>/vision-report-<YYYY-MM-DD>.md` from the
 report template, computes an honest fidelity score, and writes the truth tiers.
 
 ## Step 5 — Present
