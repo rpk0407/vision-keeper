@@ -1,0 +1,59 @@
+# Vision-Keeper
+
+Freeze a project's original vision at birth. When you say it's done, a **blind panel of
+agents** — who never saw how it was built — judges the delivered product against that frozen
+vision and writes an honest acceptance report.
+
+The point is **quarantine**: a judge's value comes from *not* having lived through the
+implementation. No anchoring bias, no "it's my code so it's good."
+
+## Install (local, for development)
+
+```bash
+claude --plugin-dir "C:/Users/rayan/Desktop/vision-keeper"
+```
+
+Reload after edits with `/reload-plugins`.
+
+## Use
+
+1. **Seal the vision** at the start of a project:
+   ```
+   /vision-keeper:vision-init
+   ```
+   Answer the interview (or point it at an existing brief). Produces a hashed, committed
+   `VISION.lock`.
+
+2. **Build freely.** Vision-Keeper watches nothing.
+
+3. **Judge when done:**
+   ```
+   /vision-keeper:vision-judge
+   ```
+   Wakes the blind 4-lens panel + chief; writes `vision-report-<date>.md`.
+
+## The four lenses
+
+- **Functional completeness** — does it do what was promised?
+- **Experience fidelity** — does it feel like the dream? (uses the live preview)
+- **Scope integrity** — did it quietly become something else?
+- **Promise audit** — every promise checked one by one.
+
+## How the hash protects you
+
+`VISION.lock` carries a sha256 of its own content (line-ending normalized, so Windows and
+Unix agree). `vision-judge` verifies it before judging — if the vision was edited after
+sealing, the report says so. The hash is computed by code, never by the model.
+
+## Develop
+
+```bash
+npm test
+```
+
+See `fixtures/EVAL.md` for the drift-detection eval that proves the panel catches a build
+that quietly became something else.
+
+## License
+
+MIT
