@@ -9,9 +9,11 @@ implementation. No anchoring bias, no "it's my code so it's good."
 
 ## Demo
 
-![Vision-Keeper — how it works](docs/demo.svg)
+![Vision-Keeper — how it works](examples/demo.gif)
 
-▶ Live, animated walk-through: open [`examples/how-it-works.html`](examples/how-it-works.html) in a browser, or run `/vision-keeper:vision-demo`.
+*Vision seals → a coder agent drifts (login + tracker) → the blind watcher flags it → you steer → the panel scores fidelity.*
+
+▶ Run it yourself: open [`examples/how-it-works.html`](examples/how-it-works.html) in a browser, or run `/vision-keeper:vision-demo`. ([static poster](docs/demo.svg))
 
 ## Install (local, for development)
 
