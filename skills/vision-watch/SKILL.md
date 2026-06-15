@@ -52,3 +52,14 @@ mid-build and needs the signal, not an essay. Append a dated entry (status + poi
 
 If STATUS is `alert`, say plainly that the build is diverging from the sealed vision and the
 user should steer now.
+
+## Step 6 — Push the alert to a remote human (Hermes, optional)
+
+This is how Layer 3 (the human) gets steered even when away from the keyboard. If
+`.vision-keeper.json` has `notify.hermes` set AND a Hermes `messages_send` tool is available
+in this agent, send the headline to that target:
+
+    messages_send(target=<notify.hermes>, message="Vision-Keeper watch — STATUS: <status>\n<top grilling point>\nproject: <name>")
+
+Only send when STATUS is `drifting` or `alert` (never ping for on-track). If `notify.hermes`
+is unset or no Hermes tool is connected, skip silently — this is opt-in.

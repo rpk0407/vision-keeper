@@ -106,6 +106,28 @@ cost stays near zero until you ask for judgment.
 
 Add `.vision-keeper/` to your project's `.gitignore` — it's local runtime state.
 
+## Use it with your Hermes agent (remote human-in-the-loop)
+
+If you run your coding agent through [Hermes](https://github.com/) (the agent messaging
+bridge — Telegram, Discord, Slack, WhatsApp, Signal, Matrix), Vision-Keeper can push its
+alerts to you wherever you are. That's Layer 3 — the human — reachable on your phone.
+
+1. Install this plugin in your Hermes-run agent (same as any Claude Code plugin: `--plugin-dir`
+   or your marketplace).
+2. In `.vision-keeper.json`, add a Hermes target:
+   ```json
+   { "notify": { "hermes": "telegram:<your-chat-id>" } }
+   ```
+   (Use any `platform:chat_id` Hermes exposes, e.g. `discord:#builds`, `slack:#eng`.)
+3. Now:
+   - **`/vision-watch`** pushes a message when the build is `drifting`/`alert` — so you can
+     steer from your phone mid-build.
+   - **`/vision-judge`** pushes the final fidelity verdict + report path.
+
+It's opt-in and degrades gracefully: if `notify.hermes` is unset or no Hermes tool is
+connected to the agent, nothing is sent. The keeper that *judges* stays blind either way —
+Hermes only carries the verdict out, never the build story in.
+
 ## Choosing the model
 
 By default the keepers run on your session model (`inherit`). You can override it.

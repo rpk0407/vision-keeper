@@ -57,3 +57,9 @@ test('hooks file is valid JSON and wires the ledger on Write/Edit and Stop', () 
   assert.match(hooks.hooks.Stop[0].hooks[0].command, /vision-ledger\.mjs" status/);
   assert.match(hooks.hooks.SubagentStop[0].hooks[0].command, /vision-ledger\.mjs" mark subagent/);
 });
+
+test('example config is valid JSON and documents a Hermes notify target', () => {
+  const cfg = JSON.parse(readFileSync('vision-keeper.config.example.json', 'utf8'));
+  assert.ok(cfg.notify && typeof cfg.notify.hermes === 'string', 'notify.hermes should be present');
+  assert.match(cfg.notify.hermes, /^[a-z]+:.+/, 'notify.hermes should be a platform:id target');
+});

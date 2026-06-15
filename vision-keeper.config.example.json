@@ -2,5 +2,8 @@
   "model": "sonnet",
   "models": {
     "experience": "opus"
+  },
+  "notify": {
+    "hermes": "telegram:<your-chat-id>"
   }
 }

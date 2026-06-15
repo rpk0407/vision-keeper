@@ -66,3 +66,12 @@ report template, computes an honest fidelity score, and writes the truth tiers.
 
 Show the user the report path and the overall verdict. Lead with the honest landing — if the
 fidelity is low, say so plainly. Do not soften the panel's findings.
+
+## Step 6 — Push the verdict to a remote human (Hermes, optional)
+
+If `.vision-keeper.json` has `notify.hermes` set AND a Hermes `messages_send` tool is
+available in this agent, send the verdict headline to that target so a remote human gets it:
+
+    messages_send(target=<notify.hermes>, message="Vision-Keeper verdict — <fidelity>% fidelity\n<one-line honest landing>\nreport: <report path>")
+
+If `notify.hermes` is unset or no Hermes tool is connected, skip silently — this is opt-in.
