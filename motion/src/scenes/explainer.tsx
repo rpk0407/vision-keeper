@@ -122,15 +122,15 @@ export default makeScene2D(function* (view) {
   );
 
   // --- Final judgment ---
-  yield* all(editor().opacity(0.25, 0.5), watcher().opacity(0.25, 0.5), steer().opacity(0, 0.4));
+  yield* all(editor().opacity(0, 0.5), watcher().opacity(0, 0.5), steer().opacity(0, 0.4));
   const jtitle = createRef<Txt>();
-  view.add(<Txt ref={jtitle} text="final judgment — 4 blind keepers + chief" fill={MUT} fontFamily={SANS} fontSize={26} y={-40} opacity={0} />);
+  view.add(<Txt ref={jtitle} text="final judgment — 4 blind keepers + chief" fill={MUT} fontFamily={SANS} fontSize={26} y={-150} opacity={0} />);
   yield* jtitle().opacity(1, 0.4);
 
   const lenses = ['functional', 'experience', 'scope', 'promise', 'chief'];
   const chips = lenses.map(() => createRef<Rect>());
   const row = createRef<Layout>();
-  view.add(<Layout ref={row} layout gap={24} y={60} />);
+  view.add(<Layout ref={row} layout gap={24} y={-20} />);
   lenses.forEach((name, i) => {
     row().add(
       <Rect ref={chips[i]} width={200} height={84} radius={12} fill={'#1f3010'} stroke={GOOD} lineWidth={2} scale={0} alignItems={'center'} justifyContent={'center'}>
@@ -144,11 +144,11 @@ export default makeScene2D(function* (view) {
 
   const score = createSignal(0);
   const scoreTxt = createRef<Txt>();
-  view.add(<Txt ref={scoreTxt} text={() => Math.round(score()) + '%'} fill={GOOD} fontFamily={SANS} fontWeight={700} fontSize={120} y={230} opacity={0} />);
+  view.add(<Txt ref={scoreTxt} text={() => Math.round(score()) + '%'} fill={GOOD} fontFamily={SANS} fontWeight={700} fontSize={120} y={170} opacity={0} />);
   yield* scoreTxt().opacity(1, 0.3);
   yield* score(91, 1.4, easeOutCubic);
   const caption = createRef<Txt>();
-  view.add(<Txt ref={caption} text="promises kept · scope held · drift corrected mid-flight" fill={MUT} fontFamily={SANS} fontSize={26} y={320} opacity={0} />);
+  view.add(<Txt ref={caption} text="promises kept · scope held · drift corrected mid-flight" fill={MUT} fontFamily={SANS} fontSize={26} y={290} opacity={0} />);
   yield* caption().opacity(1, 0.5);
   yield* waitFor(1.5);
 });
