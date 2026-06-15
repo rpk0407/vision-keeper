@@ -7,6 +7,10 @@ vision and writes an honest acceptance report.
 The point is **quarantine**: a judge's value comes from *not* having lived through the
 implementation. No anchoring bias, no "it's my code so it's good."
 
+**Works with [Hermes](#use-it-with-your-hermes-agent-remote-human-in-the-loop):** run it through a Hermes agent and the drift
+alerts + verdicts reach you on **Telegram / Discord / Slack** — your project messages *you*
+the moment it goes off-spec, even when you're away from the keyboard.
+
 ## Demo
 
 ![Vision-Keeper — how it works](examples/demo.gif)
